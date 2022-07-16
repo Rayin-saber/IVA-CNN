@@ -98,7 +98,12 @@ def train_cnn(model, epochs, learning_rate, batch_size, X, Y, X_test, Y_test):
   show_attention decides if attention weights are plotted.
   """
   print_interval = 10
-  optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, weight_decay=0.01)
+  #In old version, SGD optimizer was used to train the model, while it encountered an expected error that cause our model into saddle point
+  #There are two solutions, one is replace it with other optimizer such as Adam, 
+  #two is change the learning rate from 0.0001 to 0.1, which will enable the CNN-based models jump out of the saddle point, while it needs further fine-tune with other parameters to obtain the best results.
+  #optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, weight_decay=0.01)
+  optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
 
   criterion = torch.nn.CrossEntropyLoss()
   num_of_examples = X.shape[0]
