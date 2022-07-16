@@ -229,14 +229,14 @@ def main():
                 test_x = torch.tensor(test_x, dtype=torch.float32).cuda()
                 test_y = torch.tensor(test_y, dtype=torch.int64).cuda()
 
-                net = IAV_CNN(1, 128, 2, 2)
+                net = IAV_CNN(1, 128, 1, 2)
                 net.cuda()
                 train_cnn(net, parameters['num_of_epochs'], parameters['learning_rate'], parameters['batch_size'], train_x, train_y, test_x, test_y)            
             
     elif parameters['subtype'] == 'H3N2':
         H3N2_Antigenic_dist = pd.read_csv('antigenic/H3N2_antigenic.csv')
-        H3N2_Antigenic_dist_train = pd.read_csv('antigenic/update/H3N2_train.csv')
-        H3N2_Antigenic_dist_test = pd.read_csv('antigenic/update/H3N2_test.csv')        
+        #H3N2_Antigenic_dist_train = pd.read_csv('antigenic/update/H3N2_train.csv') #this is to use other train-test split for train and validation
+        #H3N2_Antigenic_dist_test = pd.read_csv('antigenic/update/H3N2_test.csv')        
         H3N2_seq = pd.read_csv('sequence/H3N2/H3N2_sequence_HA1.csv', names=['seq', 'description'])
         if model_mode == 'Tradition model': 
             if feature_type == 'Min-Shi Lee':
@@ -346,15 +346,15 @@ def main():
                 test_x = torch.tensor(test_x, dtype=torch.float32).cuda()
                 test_y = torch.tensor(test_y, dtype=torch.int64).cuda()
 
-                net = IAV_CNN(1, 128, 2, 2)
+                net = IAV_CNN(1, 128, 1, 2)
                 net.cuda()
                 train_cnn(net, parameters['num_of_epochs'], parameters['learning_rate'], parameters['batch_size'], train_x, train_y, test_x, test_y)     
 
 
     elif parameters['subtype'] == 'H5N1':
         H5N1_Antigenic_dist = pd.read_csv('antigenic/H5N1_antigenic.csv')
-        H5N1_Antigenic_dist_train = pd.read_csv('antigenic/update/H5N1_train.csv')
-        H5N1_Antigenic_dist_test = pd.read_csv('antigenic/update/H5N1_test.csv')  
+        #H5N1_Antigenic_dist_train = pd.read_csv('antigenic/update/H5N1_train.csv')
+        #H5N1_Antigenic_dist_test = pd.read_csv('antigenic/update/H5N1_test.csv')  
         H5N1_seq = pd.read_csv('sequence/H5N1/H5N1_sequence_HA1.csv', names=['seq', 'description'])
         if model_mode == 'Tradition model': 
             if feature_type == 'Min-Shi Lee':
@@ -409,17 +409,18 @@ def main():
                     
         elif model_mode == 'Deep model':
             setup_seed(20)
-
-#            feature, label = cnn_training_data(H5N1_Antigenic_dist, H5N1_seq)
-#            train_x, test_x, train_y, test_y = train_test_split_data(feature, label, 0.2)
             
-            train_feature, train_label = cnn_training_data(H5N1_Antigenic_dist_train, H5N1_seq)
-            train_x = np.array(train_feature)
-            train_y = np.array(train_label)
+            #use the train-test ratio of 0.2
+            feature, label = cnn_training_data(H5N1_Antigenic_dist, H5N1_seq)
+            train_x, test_x, train_y, test_y = train_test_split_data(feature, label, 0.2)
             
-            test_feature, test_label = cnn_training_data(H5N1_Antigenic_dist_test, H5N1_seq)
-            test_x = np.array(test_feature)
-            test_y = np.array(test_label)
+            #train_feature, train_label = cnn_training_data(H5N1_Antigenic_dist_train, H5N1_seq)
+            #train_x = np.array(train_feature)
+            #train_y = np.array(train_label)
+            
+            #test_feature, test_label = cnn_training_data(H5N1_Antigenic_dist_test, H5N1_seq)
+            #test_x = np.array(test_feature)
+            #test_y = np.array(test_label)
             
             if baseline == 'rf_baseline':
                 print('rf_baseline + ProVect on H5N1:')
@@ -465,7 +466,7 @@ def main():
                 test_x = torch.tensor(test_x, dtype=torch.float32).cuda()
                 test_y = torch.tensor(test_y, dtype=torch.int64).cuda()
 
-                net = IAV_CNN(1, 128, 2, 2)
+                net = IAV_CNN(1, 128, 1, 2) # the parameter needs further fine-tuning
                 net.cuda()
                 train_cnn(net, parameters['num_of_epochs'], parameters['learning_rate'], parameters['batch_size'], train_x, train_y, test_x, test_y)     
 
