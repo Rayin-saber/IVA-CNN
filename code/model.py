@@ -612,6 +612,7 @@ class ResBlock(nn.Module):
         return F.relu(path)
 
 # Network Module
+# This network needs to be further optimized due to the version update
 class IAV_CNN(nn.Module):
     def __init__(self, in_channel, filters, blocks, num_classes):
         super(IAV_CNN, self).__init__()
@@ -631,12 +632,12 @@ class IAV_CNN(nn.Module):
         )
 
         self.fc = nn.Linear(128, num_classes)
-        self.drop = nn.Dropout(p=0.5)
+        #self.drop = nn.Dropout(p=0.5) #dropout needs to be redeployed into the model
 
     def forward(self, x):
         x = self.conv_block(x)
         x = self.res_blocks(x)
-        
+        #x = self.drop(x)
         x = self.out_conv(x)
         x = F.adaptive_avg_pool2d(x, 1)
 
